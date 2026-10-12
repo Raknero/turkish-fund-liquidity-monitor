@@ -22,10 +22,10 @@ suspended. This pipeline does not use them.
 `download_latest_report` asks KAP for the newest publication and ignores
 whatever PDF was already on disk. The file still says Ağustos-2026. The
 header matches one TEFAS row, 07.09.2026 (price 9,495.638007, 26,078,554
-shares, NAV 247,632,508,542.43 TL). A row dated T is the previous
-session's close, so the valuation day is 04.09, and the newest purchase
-date in the PDF is 04.09 too. The delta window is the next session
-through the cutoff, 05.09–16.09. KAP returned 11 notices. Three were
+shares, NAV 247,632,508,542.43 TL). A row dated T is published on T and
+valued at the previous session's close, so the valuation day is 04.09,
+and the newest purchase date in the PDF is 04.09 too. The delta window
+opens the next calendar day, 05.09, and runs through the cutoff, 16.09. KAP returned 11 notices. Three were
 already inside the PDF and were dropped. Eight named several funds.
 None named TLY alone, so nothing was merged as a fact.
 
@@ -35,15 +35,16 @@ Forty-five names, alphabetical. The frame is the top of that list, through EREGL
 
 ![Estimated book at the cutoff](img/report_evolution.png)
 
-`Başlangıç Lot` is the PDF. The rows on screen are the largest names, plus TERA so the estimate column is visible. `Kesinleşen Delta` is a notice that names
+`Başlangıç Lot` is the lot count in the PDF. The rows on screen are the largest names, plus TERA so the estimate column is visible. `Kesinleşen Delta` is the lot change from notices that name
 only this fund; that column is zero in this window. `Oransal Tahmini
-Delta` is the purchasing-power split of a manager-level trade. TERA
-picks up 933,176 lots that way, and the estimated lot is the PDF plus
-that split (12,525,270). The large names did not trade. `Güncel Fiyat`
-is the BIST close on 16.09 (DSTKF 2,448.00). The weight divides by the
-TEFAS row dated 16.09, **243,624,480,154.28 TL**. That row is the 15.09
-valuation, so DSTKF at **27.16%** is the limit-down close on the
-previous session's NAV. The same lots at the 15.09 close are 30.2% of
+Delta` is this fund's estimated lots from the purchasing-power split of
+a manager-level trade. TERA picks up 933,176 lots that way, and the
+estimated lot count is the PDF's lots plus that split (12,525,270). The
+large names did not trade. `Güncel Fiyat` is the BIST close on 16.09
+(DSTKF 2,448.00). The weight divides estimated lots times that close by
+the TEFAS row dated 16.09, **243,624,480,154.28 TL**. That row is the
+15.09 valuation, so DSTKF's **27.16%** is those lots at the limit-down
+close, over the previous session's NAV. The same lots at the 15.09 close are 30.2% of
 that NAV; the case study uses that cut. Priced names cover 85.23% of
 the AUM. The rest has no usable close.
 
@@ -80,8 +81,8 @@ that day, this fund's weight in the pool, times the aggregate. If any
 named fund has no Aktif Güç that day, or the pool is not positive, that
 notice stays out. The evolution table keeps the estimate in its own
 column (`Oransal Tahmini Delta Lot`) so it is not presented as a KAP
-figure. `Güncel Tahmini Lot` is the sum of the PDF, the exclusive
-notices, and that estimate.
+figure. `Güncel Tahmini Lot` is the PDF's lot count, plus the lot change from
+exclusive notices, plus that estimate.
 
 Aktif Güç is `AUM × (equity % + liquidity %) / 100`. Liquidity is repo,
 reverse repo, money-market lines, and deposits. Repo can be negative, so
@@ -144,7 +145,9 @@ double-counted 8 multi-fund notices, with no error. On 14.09 the date
 started coming from the PDF's own figures. There is no month-end
 fallback.
 
-The filename on disk is now `TLY_2026_HB35.pdf` (`{year}_{code}{ordinal}`).
+The filename on disk is now `TLY_2026_HB35.pdf`: the fund code, then the
+slug `{year}_{code}{ordinal}` (`2026_HB35`). `code` is KAP's period field
+(`HB` or `AB`), the same attribute as `ReportPeriod.code`, not the fund code.
 `download_reports` can keep two weekly files side by side.
 `download_latest_report` then deletes the others in that folder, so the
 pipeline parses one baseline: the newest publication. `parse_directory`
@@ -230,8 +233,9 @@ with KAPDeltaEngine(fon_kodu="TLY") as engine:
     )
 ```
 
-`updated` is the PDF plus notices that named only TLY. `unresolved` is
-every multi-fund notice, parsed and not merged. Step 4, inside
+`updated` is the parsed book: the PDF's lots plus the lot changes from
+notices that named only TLY. `unresolved` is every multi-fund notice,
+parsed and not merged. Step 4, inside
 `python kap_delta_engine.py`, is what estimates a share of those.
 
 ## Report

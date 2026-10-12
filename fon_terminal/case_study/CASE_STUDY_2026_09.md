@@ -65,7 +65,7 @@ Published lots, the top of the alphabetical list. DSTKF is 27,025,777, and that 
 
 ![KAP portfolio evolution](img/kap_report_evolution.png)
 
-`Kesinleşen Delta` is a notice that names only TLY; this window has none. `Oransal Tahmini Delta` is TLY's share of a manager-level trade. TERA is one: 11,592,094 lots in the PDF plus 933,176 estimated. The price is the 16.09 BIST close, divided by the TEFAS row dated 16.09 (243.6 billion TL), which is still the 15.09 valuation. DSTKF at 27.2% is that limit-down close on the previous session's NAV. Section 4's 30.2% is the same lots at the 15.09 close. DSTKF closed −10% on 16.09, which is the gap. The frames are a short look. The uncut report is the [16.09 control PDF](../kap_pdf_downloader/parser_kontrol_raporu_2026-09-16.pdf). The pipeline write-up is the [KAP README](../kap_pdf_downloader/README.md).
+`Kesinleşen Delta` is the lot change from notices that name only TLY; this window has none. `Oransal Tahmini Delta` is TLY's estimated lots from a manager-level trade. TERA is one: 11,592,094 lots in the PDF plus 933,176 estimated. The price column is the 16.09 BIST close. Weight divides estimated lots times that close by the TEFAS row dated 16.09 (243.6 billion TL), which is still the 15.09 valuation. DSTKF's 27.2% is those lots at the limit-down close, over the previous session's NAV. Section 4's 30.2% is the same lots at the 15.09 close. DSTKF closed −10% on 16.09, which is the gap. The frames are a short look. The uncut report is the [16.09 control PDF](../kap_pdf_downloader/parser_kontrol_raporu_2026-09-16.pdf). The pipeline write-up is the [KAP README](../kap_pdf_downloader/README.md).
 
 The two halves were developed separately on purpose: the terminal was the
 working system, the KAP pipeline was under active development, and the plan
@@ -118,7 +118,7 @@ they **were** written after the event; see the limitations in section 6.
 
 - **Shares fell far faster than investors.** In both funds the average leaver
   was much larger than the average investor: the whale-radar pattern.
-- **There was never a buffer.** PHE's cash-like assets were 1-3% of NAV in July.
+- **The buffer was already thin.** PHE's cash-like assets were 1-3% of NAV in July, and net liquidity started at +2.2%.
 - **From 05.08 both funds were borrowing to pay leavers.** By late August, PBR's
   equity exposure was 129% of NAV: leveraged, and the investors who stayed were
   financing the ones who left.
@@ -168,7 +168,7 @@ they **were** written after the event; see the limitations in section 6.
 | 04.09 (weekly report) | DSTKF 25.3% | 60.0% | 74.9% |
 | 15.09 (04.09 lots at 15.09 closes, estimate) | DSTKF 30.2% | 67.6% | 85.6% |
 
-On 16.09 every one of the top five holdings closed at the -10% daily limit. The section 2 frame divides those closes by this same NAV and prints DSTKF at 27.2%: the crash price on the previous session's assets. Applying the 16.09 closes to the 04.09 holdings gives an estimated one-day NAV change of **-8.8% to -9.4%**. Net liquidity was below zero: repo borrowing had passed the remaining reverse repo (2.7% of NAV that day) and deposits, and there were no buyers for what the fund would have to sell.
+On 16.09 every one of the top five holdings closed at the -10% daily limit. The section 2 frame multiplies the 04.09 lots by those closes and divides by this same NAV. DSTKF prints at 27.2%, those lots at the crash price over the previous session's assets. Applying the 16.09 closes to the 04.09 holdings gives an estimated one-day NAV change of **-8.8% to -9.4%**. Net liquidity was below zero: repo borrowing had passed the remaining reverse repo (2.7% of NAV that day) and deposits, and there were no buyers for what the fund would have to sell.
 
 ### 4.3 The manager was one position, not several
 
@@ -223,7 +223,7 @@ Reading the table:
   funds that were not being drained (TP2, DOH, THF, KHA through August).
 - **Outflows alone are not the danger; outflows against no buffer are.** PRY,
   a cash-like fund (about 95% money market and reverse repo), lost 83% of its
-  shares between mid-August and 16.09, paid everyone, and its price kept rising. After that it
+  shares between mid-August and 16.09, paid those leavers, and its price kept rising. After that it
   was left holding its illiquid remainder (commercial paper, lease certificates),
   and its share count has not moved since 17.09. The drain rule fired; the
   liquidity rules correctly did not.

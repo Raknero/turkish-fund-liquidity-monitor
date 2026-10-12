@@ -13,11 +13,11 @@ What those numbers showed before September 2026 is in the [case study](case_stud
 
 ![Fon Terminali dashboard](img/terminal_dashboard.png)
 
-TLY as of 16.09.2026 — the last published TEFAS row before the suspension. Price and AUM still look fine; shares outstanding and reverse-repo are already falling. The charts below the table are the same window. The terminal keeps collecting after that date and shows a price of 0 as suspended. The KAP book does not: lots, closes, and AUM stop on 16.09.
+TLY as of 16.09.2026 — the last published TEFAS row before the suspension. Price and AUM still look fine; shares outstanding and reverse-repo are already falling. The charts below the table are the same window. The terminal keeps collecting after that date and shows a price of 0 as suspended. The KAP book does not use later rows.
 
-That row is the fund from the outside. The book at the 16.09 close is the [KAP pipeline](kap_pdf_downloader/README.md). What the series showed before the break is in the [case study](case_study/CASE_STUDY_2026_09.md).
+That row is the fund from the outside. The holdings book comes from the [KAP pipeline](kap_pdf_downloader/README.md). Lot changes run through the notices of 16.09. The weight denominator is the TEFAS row dated 16.09, which is the 15.09 valuation. The prices in those weights are the 16.09 BIST closes. What the series showed before the break is in the [case study](case_study/CASE_STUDY_2026_09.md).
 
-**Alerting (added after the September 2026 case study).** The dashboard applies the four rules from that write-up — whale day, share drain while price is flat (`Pay erimesi`), repo borrowing, net liquidity below zero — with the first/last fire date and the values that crossed the threshold. Outflow plus a thinning buffer is the high-severity case. A published price of 0 is shown as suspended, not as −100%.
+**Alerting (added after the September 2026 case study).** The dashboard applies the four rules from that write-up — whale day, share drain while price is down less than 3% (`Pay erimesi`), repo borrowing, net liquidity below zero — with the first/last fire date and the values that crossed the threshold. Outflow plus a thinning buffer is the high-severity case. A published price of 0 is shown as suspended, not as −100%.
 
 The terminal is a FastAPI app. One process serves the dashboard and the API, keeps `fund_database.json` warm, and adds or hides funds from the UI. The rules above are attached in memory when that file is served; they are not written back into it.
 
