@@ -69,8 +69,8 @@ From the UI: "+ Yeni Fon Ekle" calls `POST /api/add-fund`. The "×" on a tab hid
 ## Installation
 
 ```bash
-git clone https://github.com/Raknero/r-d.git
-cd r-d/fon_terminal
+git clone https://github.com/Raknero/turkish-fund-liquidity-monitor.git
+cd turkish-fund-liquidity-monitor/fon_terminal
 
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
