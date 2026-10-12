@@ -5,9 +5,9 @@ absorbing the swings from cash; newer funds in the same style were
 already running the same structure. This sandbox opens that portfolio: **what the fund holds, what it buys and sells, and how
 concentrated those holdings are** — the structure while it still works,
 and the break when the liquid/illiquid mix goes. The
-[terminal](../README.md) is the daily series (whale radar, cash buffer).
+[terminal](../terminal/README.md) is the daily series (whale radar, cash buffer).
 What those reports showed before September 2026 is in the
-[case study](../case_study/CASE_STUDY_2026_09.md).
+[case study](../case_study/README.md).
 
 The frames below are that book, regenerated with the cutoff at
 **16.09.2026**. For TLY the latest filing is the weekly report
@@ -54,15 +54,15 @@ Güç matrix — is
 [parser_kontrol_raporu_2026-09-16.pdf](parser_kontrol_raporu_2026-09-16.pdf).
 It was generated on 05.10.2026 with the cutoff at 16.09.2026.
 
-The folder is decoupled from the terminal. It has its own
-`requirements.txt`. It does not import `main.py`. The one bridge is
-`data_scraper.py`, used by `load_tefas_records` and
-`build_tefas_power_matrix`, and that bridge writes `tefas_cache.json` in
-this folder, not the app's `fund_database.json`.
+The folder is decoupled from the terminal. The pipeline does not import `main.py`,
+and its dependencies are in the root `requirements.txt`. The one link to
+the terminal is `terminal.data_scraper`, used by `load_tefas_records` and
+`build_tefas_power_matrix`. Through it, TEFAS rows go to
+`data/tefas_cache.json`, not the app's `data/fund_database.json`.
 
 ## What a run does
 
-`python kap_delta_engine.py` is the full pipeline. The step numbers match
+`python -m kap_pipeline.kap_delta_engine` is the full pipeline. The step numbers match
 the log. There is no step 5. "The cutoff" below is 16.09.2026.
 
 | Step | What it uses |
@@ -205,23 +205,23 @@ filings. That is not the baseline a run selects now.
 
 ```bash
 pip install -r requirements.txt
-python kap_downloader.py          # PDFs only
-python kap_delta_engine.py        # full pipeline, writes parser_kontrol_raporu.html
+python -m kap_pipeline.kap_downloader          # PDFs only
+python -m kap_pipeline.kap_delta_engine        # full pipeline, writes data/kap/parser_kontrol_raporu.html
 ```
 
 ```python
 from datetime import date
-from kap_downloader import KAPPdfDownloader
-from kap_pdf_parser import KAPPdfParser
-from kap_delta_engine import KAPDeltaEngine, date_baseline_report
-from report_dating import load_tefas_records
+from kap_pipeline.kap_downloader import KAPPdfDownloader
+from kap_pipeline.kap_pdf_parser import KAPPdfParser
+from kap_pipeline.kap_delta_engine import KAPDeltaEngine, date_baseline_report
+from kap_pipeline.report_dating import load_tefas_records
 
 CUTOFF = date(2026, 9, 16)
 
 with KAPPdfDownloader(fon_kodu="TLY") as downloader:
     latest = downloader.download_latest_report()
 
-pdf = f"tly_pdfs/{latest['file']}"
+pdf = f"data/kap/tly_pdfs/{latest['file']}"
 baseline = KAPPdfParser().parse_file(pdf)
 dated = date_baseline_report("TLY", pdf, load_tefas_records(["TLY"])["TLY"])
 
@@ -236,7 +236,7 @@ with KAPDeltaEngine(fon_kodu="TLY") as engine:
 `updated` is the parsed book: the PDF's lots plus the lot changes from
 notices that named only TLY. `unresolved` is every multi-fund notice,
 parsed and not merged. Step 4, inside
-`python kap_delta_engine.py`, is what estimates a share of those.
+`python -m kap_pipeline.kap_delta_engine`, is what estimates a share of those.
 
 ## Report
 

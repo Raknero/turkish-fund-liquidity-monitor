@@ -7,15 +7,15 @@ They had grown very large, and their investor counts had exploded. Ranking them 
 1. **Large holders leaving.** Investors who were in the fund before it opened to the broader public hold a disproportionate share of the units. If units outstanding fall while the investor count barely moves, informed capital is exiting. That is the whale radar: share-count change next to investor-count change.
 2. **The portfolio itself.** For as long as these funds worked, they were concentrated in a few equities and absorbed price swings from a large cash pool — both to support those names and to meet redemptions. That arrangement fails when the liquid/illiquid mix deteriorates, or when holdings concentrate in names the fund can no longer move.
 
-The terminal collects the daily TEFAS series (price, shares, investors, AUM, allocation). The KAP pipeline in [`kap_pdf_downloader/`](kap_pdf_downloader/) reads holdings, subsequent trades, and single-stock concentration. Together they exist to catch a break from either side, and to judge whether the same structure can keep delivering positive returns or is already failing. Return *level* was secondary in the software. The work was the timing.
+The terminal collects the daily TEFAS series (price, shares, investors, AUM, allocation). The KAP pipeline in [`kap_pipeline/`](../kap_pipeline/) reads holdings, subsequent trades, and single-stock concentration. Together they exist to catch a break from either side, and to judge whether the same structure can keep delivering positive returns or is already failing. Return *level* was secondary in the software. The work was the timing.
 
-What those numbers showed before September 2026 is in the [case study](case_study/CASE_STUDY_2026_09.md).
+What those numbers showed before September 2026 is in the [case study](../case_study/README.md).
 
 ![Fon Terminali dashboard](img/terminal_dashboard.png)
 
 TLY as of 16.09.2026 — the last published TEFAS row before the suspension. Price and AUM still look fine; shares outstanding and reverse-repo are already falling. The charts below the table are the same window. The terminal keeps collecting after that date and shows a price of 0 as suspended. The KAP book does not use later rows.
 
-That row is the fund from the outside. The holdings book comes from the [KAP pipeline](kap_pdf_downloader/README.md). Lot changes run through the notices of 16.09. The weight denominator is the TEFAS row dated 16.09, which is the 15.09 valuation. The prices in those weights are the 16.09 BIST closes. What the series showed before the break is in the [case study](case_study/CASE_STUDY_2026_09.md).
+That row is the fund from the outside. The holdings book comes from the [KAP pipeline](../kap_pipeline/README.md). Lot changes run through the notices of 16.09. The weight denominator is the TEFAS row dated 16.09, which is the 15.09 valuation. The prices in those weights are the 16.09 BIST closes. What the series showed before the break is in the [case study](../case_study/README.md).
 
 **Alerting (added after the September 2026 case study).** The dashboard applies the four rules from that write-up — whale day, share drain while price is down less than 3% (`Pay erimesi`), repo borrowing, net liquidity below zero — with the first/last fire date and the values that crossed the threshold. Outflow plus a thinning buffer is the high-severity case. A published price of 0 is shown as suspended, not as −100%.
 
@@ -70,7 +70,7 @@ From the UI: "+ Yeni Fon Ekle" calls `POST /api/add-fund`. The "×" on a tab hid
 
 ```bash
 git clone https://github.com/Raknero/turkish-fund-liquidity-monitor.git
-cd turkish-fund-liquidity-monitor/fon_terminal
+cd turkish-fund-liquidity-monitor
 
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
@@ -81,15 +81,15 @@ playwright install chromium
 
 `playwright install chromium` is for the `401`/`403` fallback. Ordinary refreshes do not launch it.
 
-The signal tests import the KAP package, so that install needs both requirement files:
+The tests import both packages, and the HTTP tests need `httpx` from `requirements-dev.txt`, so install both files:
 
 ```bash
-pip install -r requirements.txt -r kap_pdf_downloader/requirements.txt
-python -m unittest discover -s tests
+pip install -r requirements.txt -r requirements-dev.txt
+python -m unittest discover -s tests -t .
 ```
 
 ```bash
-uvicorn main:app --reload
+uvicorn terminal.main:app --reload
 ```
 
 Open `http://127.0.0.1:8000`. The page loads from whatever is already in `fund_database.json`; the startup scan follows in the background (`[STARTUP]` in the terminal, then `[REFRESH]` once an hour). There is no fund list to hardcode. The file is what gets scanned, and new codes are added from the UI.
@@ -97,8 +97,8 @@ Open `http://127.0.0.1:8000`. The page loads from whatever is already in `fund_d
 `data_scraper.py` is the same `scrape_and_update()` without the server:
 
 ```bash
-python data_scraper.py          # every fund in fund_database.json
-python data_scraper.py TLY PHE  # just these
+python -m terminal.data_scraper          # every fund in fund_database.json
+python -m terminal.data_scraper TLY PHE  # just these
 ```
 
 ## API

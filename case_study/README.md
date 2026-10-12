@@ -45,7 +45,7 @@ said nothing until it was too late.
 | **Terminal** (`main.py`, `data_scraper.py`, `index.html`) | Daily price, shares outstanding, investor count, AUM and asset allocation for each tracked fund, from TEFAS. |
 | **"Whale radar"** (share-count change next to investor-count change) | *Who is leaving?* 100 investors leaving with 1,000 shares is noise. 100 investors leaving with 100,000 shares means large, possibly better-informed holders are exiting. |
 | **Allocation charts** (repo, reverse repo, money market, deposits) | *Is there a buffer?* How much of the fund can be turned into cash immediately, and is the fund already borrowing? |
-| **KAP pipeline** (`kap_pdf_downloader/`) | *What does the fund actually hold?* Stock-level holdings from the fund's own KAP portfolio reports; single-stock concentration; which funds share a manager (`discover_related_funds`). |
+| **KAP pipeline** (`kap_pipeline/`) | *What does the fund actually hold?* Stock-level holdings from the fund's own KAP portfolio reports; single-stock concentration; which funds share a manager (`discover_related_funds`). |
 
 The terminal on 16.09, last published TEFAS row before the halt — price and AUM still look fine; shares and reverse-repo are already falling:
 
@@ -65,7 +65,7 @@ Published lots, the top of the alphabetical list. DSTKF is 27,025,777, and that 
 
 ![KAP portfolio evolution](img/kap_report_evolution.png)
 
-`Kesinleşen Delta` is the lot change from notices that name only TLY; this window has none. `Oransal Tahmini Delta` is TLY's estimated lots from a manager-level trade. TERA is one: 11,592,094 lots in the PDF plus 933,176 estimated. The price column is the 16.09 BIST close. Weight divides estimated lots times that close by the TEFAS row dated 16.09 (243.6 billion TL), which is still the 15.09 valuation. DSTKF's 27.2% is those lots at the limit-down close, over the previous session's NAV. Section 4's 30.2% is the same lots at the 15.09 close. DSTKF closed −10% on 16.09, which is the gap. The frames are a short look. The uncut report is the [16.09 control PDF](../kap_pdf_downloader/parser_kontrol_raporu_2026-09-16.pdf). The pipeline write-up is the [KAP README](../kap_pdf_downloader/README.md).
+`Kesinleşen Delta` is the lot change from notices that name only TLY; this window has none. `Oransal Tahmini Delta` is TLY's estimated lots from a manager-level trade. TERA is one: 11,592,094 lots in the PDF plus 933,176 estimated. The price column is the 16.09 BIST close. Weight divides estimated lots times that close by the TEFAS row dated 16.09 (243.6 billion TL), which is still the 15.09 valuation. DSTKF's 27.2% is those lots at the limit-down close, over the previous session's NAV. Section 4's 30.2% is the same lots at the 15.09 close. DSTKF closed −10% on 16.09, which is the gap. The frames are a short look. The uncut report is the [16.09 control PDF](../kap_pipeline/parser_kontrol_raporu_2026-09-16.pdf). The pipeline write-up is the [KAP README](../kap_pipeline/README.md).
 
 The two halves were developed separately on purpose: the terminal was the
 working system, the KAP pipeline was under active development, and the plan
@@ -83,7 +83,7 @@ after the event.
 **Dates are "visible" dates.** A TEFAS record dated *T* is published on *T* and
 is valued at the previous business day's close. This was measured, not assumed:
 KAP report header figures match TEFAS exactly one business day later (see
-`kap_pdf_downloader/report_dating.py`), and every broker fill in the author's
+`kap_pipeline/report_dating.py`), and every broker fill in the author's
 statements matches the TEFAS row one business day after the order. So "first
 visible on 08.09" means an investor could have acted on 08.09.
 
@@ -285,8 +285,7 @@ published NAV, no alerts overlay) is in section 2.
 ## 8. Reproducing
 
 ```bash
-cd fon_terminal/case_study
-python build_case_study.py
+python -m case_study.build_case_study
 ```
 
 The script reads the terminal's local `fund_database.json` (not committed) and
