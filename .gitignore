@@ -1,15 +1,20 @@
 __pycache__/
+*.pyc
+.venv/
 *.json
 !tests/fixtures/*.json
-tefas_debug.html
+
+# Yerel veri ve indirmeler: fund_database.json, tefas_cache.json, KAP PDF'leri (data/kap/*_pdfs/), eski artıklar (data/_old/).
+data/
 
 # Tamamen lokal, gizli geliştirici mimari notu -- Git ile ASLA takip edilmemeli.
-INTERNAL_ARCHITECTURE.md
+docs/INTERNAL_ARCHITECTURE.md
 
 # Vaka çalışmasının kişisel sürümü (işlemler, tutarlar, KAP PDF kopyaları) -- Git ile ASLA takip edilmemeli.
 case_study/private/
 
-# Kökte duran indirme artıkları. kap_pdf_downloader/.gitignore yalnızca o klasörün içinde geçerlidir.
+# data/ dışına düşebilecek indirme ve çıktı artıkları.
 *_pdfs/
+tefas_debug.html
 parser_kontrol_raporu.html
-kap_pdf_downloader/_run_full.txt
+kontrol_raporu.html

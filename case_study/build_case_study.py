@@ -13,15 +13,15 @@ Optional inputs, used only when present:
 
 Row-date convention: a TEFAS record dated T is published on T and is
 valued at the previous business day's close (measured against KAP PDFs,
-see `kap_pdf_downloader/report_dating.py`). Every date below is the day a
+see `kap_pipeline/report_dating.py`). Every date below is the day a
 number became VISIBLE, which is the only fair date for "could this have
 been acted on".
 """
 
 import json
 import os
-import sys
 from datetime import date, datetime, timedelta
+from pathlib import Path
 
 import matplotlib
 
@@ -30,17 +30,16 @@ import matplotlib.dates as mdates  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TERMINAL_DIR = os.path.dirname(HERE)
-DATABASE_PATH = os.path.join(TERMINAL_DIR, "fund_database.json")
-KAP_DIR = os.path.join(TERMINAL_DIR, "kap_pdf_downloader")
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = REPO_ROOT / "data"
+DATABASE_PATH = str(DATA_DIR / "fund_database.json")
 PUBLIC_IMG_DIR = os.path.join(HERE, "img")
 PRIVATE_DIR = os.path.join(HERE, "private")
 PRIVATE_IMG_DIR = os.path.join(PRIVATE_DIR, "img")
 PRIVATE_PDF_DIR = os.path.join(PRIVATE_DIR, "data")
 TRADES_PATH = os.path.join(PRIVATE_DIR, "trades.json")
 
-sys.path.insert(0, KAP_DIR)
-from kap_delta_engine import _liquidity_ratio_pct  # noqa: E402  same definition the pipeline uses
+from kap_pipeline.kap_delta_engine import _liquidity_ratio_pct  # noqa: E402  same definition the pipeline uses
 
 CHART_START = date(2026, 7, 15)
 INDEX_BASE_DATE = date(2026, 7, 16)
@@ -254,7 +253,7 @@ def tly_concentration(pdf_dir):
     """Top holdings by NAV weight for each TLY report on disk, using the
     report's own per-stock valuation prices; plus a 15.09 estimate from
     the 04.09 lots at 15.09 BIST closes when yfinance is available."""
-    from kap_pdf_parser import KAPPdfParser
+    from kap_pipeline.kap_pdf_parser import KAPPdfParser
 
     parser = KAPPdfParser(verbose=False)
     snapshots = {}

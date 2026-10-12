@@ -14,16 +14,16 @@ has no dependency on any other part of the host project; it only needs the
 third-party `pdfplumber` library.
 
 Usage:
-    from kap_pdf_parser import KAPPdfParser
+    from kap_pipeline.kap_pdf_parser import KAPPdfParser
 
     parser = KAPPdfParser()
-    holdings = parser.parse_file("tly_pdfs/TLY_2026_03.pdf")
+    holdings = parser.parse_file("data/kap/tly_pdfs/TLY_2026_03.pdf")
     # {"ALKLC": 731256.0, "CWENE": 3000000.0, ...}
 
-    history = parser.parse_directory("tly_pdfs")
+    history = parser.parse_directory("data/kap/tly_pdfs")
     # {"2026_AB06": {...}, "2026_AB07": {...}, "2026_HB35": {...}}
 
-    fingerprint = parser.extract_fingerprint("tly_pdfs/TLY_2026_HB35.pdf")
+    fingerprint = parser.extract_fingerprint("data/kap/tly_pdfs/TLY_2026_HB35.pdf")
     # ReportFingerprint(cadence="HAFTALIK", total_value=247632508542.43, ...)
     # -- the evidence `report_dating` uses to date the report, since the
     # document's own period label is not reliable (see ReportFingerprint).
@@ -37,9 +37,13 @@ import os
 import re
 from dataclasses import dataclass, field
 from datetime import date, datetime
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import pdfplumber
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = REPO_ROOT / "data"
 
 
 # Cadence labels used by `ReportFingerprint.cadence` -- derived from the
@@ -1955,7 +1959,7 @@ def export_to_html(
 
 if __name__ == "__main__":
     parser = KAPPdfParser()
-    history = parser.parse_directory("tly_pdfs")
+    history = parser.parse_directory(str(DATA_DIR / "kap" / "tly_pdfs"))
 
     print("\n" + "=" * 60)
     print("KAP PORTFÖY DAĞILIM RAPORU - HİSSE SENEDİ AYRIŞTIRMA SONUCU")
@@ -1972,4 +1976,5 @@ if __name__ == "__main__":
             print(f"  {ticker:<8} {lot:>18,.2f} lot")
 
     print("\n" + "=" * 60)
-    export_to_html(history, "parser_kontrol_raporu.html")
+    (DATA_DIR / "kap").mkdir(parents=True, exist_ok=True)
+    export_to_html(history, str(DATA_DIR / "kap" / "parser_kontrol_raporu.html"))

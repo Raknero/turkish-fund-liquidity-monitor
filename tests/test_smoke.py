@@ -1,23 +1,16 @@
 """Import and route smoke tests, a safety net for moving files around."""
 import importlib
-import sys
 import unittest
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "kap_pdf_downloader"))
-sys.path.insert(0, str(ROOT / "case_study"))
 
 MODULES = [
-    "data_scraper",
-    "main",
-    "signals",
-    "kap_downloader",
-    "kap_pdf_parser",
-    "report_dating",
-    "kap_delta_engine",
-    "build_case_study",
+    "terminal.data_scraper",
+    "terminal.main",
+    "terminal.signals",
+    "kap_pipeline.kap_downloader",
+    "kap_pipeline.kap_pdf_parser",
+    "kap_pipeline.report_dating",
+    "kap_pipeline.kap_delta_engine",
+    "case_study.build_case_study",
 ]
 
 
@@ -32,7 +25,7 @@ class AppRoutes(unittest.TestCase):
     # Routes are read from app.routes; TestClient is never opened as a
     # context manager, so lifespan (and its TEFAS refresh) never runs.
     def test_api_routes_exist(self):
-        from main import app
+        from terminal.main import app
 
         routes = {
             (route.path, method)

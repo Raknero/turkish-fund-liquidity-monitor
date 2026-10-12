@@ -45,11 +45,11 @@ IMPORTANT / UNRESOLVED DATA LIMITATION (verified live, not assumed):
     guessing here would silently corrupt financial data.
 
 Usage:
-    from kap_delta_engine import KAPDeltaEngine, date_baseline_report
-    from report_dating import load_tefas_records
+    from kap_pipeline.kap_delta_engine import KAPDeltaEngine, date_baseline_report
+    from kap_pipeline.report_dating import load_tefas_records
     from datetime import date
 
-    pdf = "tly_pdfs/TLY_2026_HB35.pdf"          # from KAPPdfDownloader
+    pdf = "data/kap/tly_pdfs/TLY_2026_HB35.pdf"  # from KAPPdfDownloader
     baseline = KAPPdfParser().parse_file(pdf)    # {"SVGYO": 10000.0, ...}
 
     # WHEN the baseline is valid is read out of the PDF's own figures, never
@@ -75,14 +75,18 @@ import time
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from html import escape as html_escape
+from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import requests
 from bs4 import BeautifulSoup
 
-from kap_downloader import KAPPdfDownloader, _request_with_retry
-from kap_pdf_parser import KAPPdfParser
-from report_dating import AsOfResolution, ReportDatingError, load_tefas_records, resolve_as_of_date
+from kap_pipeline.kap_downloader import KAPPdfDownloader, _request_with_retry
+from kap_pipeline.kap_pdf_parser import KAPPdfParser
+from kap_pipeline.report_dating import AsOfResolution, ReportDatingError, load_tefas_records, resolve_as_of_date
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = REPO_ROOT / "data"
 
 
 def date_baseline_report(
@@ -1142,7 +1146,7 @@ def collect_global_baseline(
     )
 
     for fon_kodu in related_funds:
-        output_dir = f"{fon_kodu.lower()}_pdfs"
+        output_dir = str(DATA_DIR / "kap" / f"{fon_kodu.lower()}_pdfs")
 
         try:
             with KAPPdfDownloader(fon_kodu=fon_kodu, output_dir=output_dir) as downloader:
@@ -1318,7 +1322,7 @@ def build_tefas_power_matrix(
     the last `days_back` days of TEFAS AUM ("Toplam Deger") and portfolio
     distribution ("Hisse Senedi" %, plus liquidity lines) via the
     project's existing, already-working TEFAS scraper
-    (`fon_terminal/data_scraper.py`, one directory up from this sandbox --
+    (`terminal/data_scraper.py`, imported as `terminal.data_scraper` --
     see the "Bridging to data_scraper.py" note below), and turns that into
     a daily "Aktif Guc" (active purchasing power) figure per fund -- not
     just the equity portion, but equity PLUS cash-like liquidity, since
@@ -1336,16 +1340,16 @@ def build_tefas_power_matrix(
         {"TLY": {"2026-07-23": 187837027636.22, ...}, "THF": {...}, ...}
 
     Bridging to data_scraper.py: this is the one place in the
-    kap_pdf_downloader sandbox that intentionally breaks its own "no
-    dependency on fon_terminal's own modules" rule (see this folder's
+    kap_pipeline sandbox that intentionally breaks its own "no
+    dependency on terminal's own modules" rule (see this folder's
     README) -- TEFAS AUM/distribution data only exists in that module, and
     duplicating its Playwright session handshake here would be a
     maintenance hazard, not an improvement. The import is done lazily
-    (only when this function actually runs) via a `sys.path` bridge to the
-    parent `fon_terminal/` directory, so nothing else in this sandbox
+    (only when this function actually runs) as `from terminal import
+    data_scraper`, so nothing else in this sandbox
     requires `playwright` to be installed. `data_scraper.DATABASE_FILE` is
-    also redirected to a dedicated `tefas_cache.json` inside THIS folder
-    (never the app's real `fon_terminal/fund_database.json`) so this
+    also redirected to a dedicated `data/tefas_cache.json`
+    (never the app's real `data/fund_database.json`) so this
     exploratory pipeline can never add an unrequested fund tab to the live
     dashboard or otherwise mutate production data as a side effect.
 
@@ -1364,7 +1368,7 @@ def build_tefas_power_matrix(
     distribution breakdown at all for that day (e.g. a restricted/
     qualified fund) and is treated as genuinely unknown, so that day is
     skipped rather than assuming 0% -- same distinction already documented
-    in `fon_terminal/README.md`'s "Handling Incomplete Financial Data".
+    in `terminal/README.md`'s "Handling Incomplete Financial Data".
     Missing liquidity components, unlike missing equity data, are always
     treated as 0% (see `_liquidity_ratio_pct`), per this feature's spec.
 
@@ -1373,23 +1377,16 @@ def build_tefas_power_matrix(
     for the HTML "Execution Trace" section. Purely additive: omitting it
     changes nothing about this function's return value or behavior.
     """
-    import os
-    import sys
-
-    sandbox_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(sandbox_dir)  # fon_terminal/
-    if project_root not in sys.path:
-        sys.path.insert(0, project_root)
-
     try:
-        import data_scraper
+        from terminal import data_scraper
     except ImportError as exc:
-        print(f"[HATA] TEFAS veri modulu (fon_terminal/data_scraper.py) import edilemedi: {exc}")
+        print(f"[HATA] TEFAS veri modulu (terminal/data_scraper.py) import edilemedi: {exc}")
         return {}
 
     # Redirect to a sandbox-local cache file -- see docstring above for why
     # this must never point at the live app's fund_database.json.
-    data_scraper.DATABASE_FILE = os.path.join(sandbox_dir, "tefas_cache.json")
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    data_scraper.DATABASE_FILE = str(DATA_DIR / "tefas_cache.json")
 
     print(
         f"\n[SISTEM] TEFAS Gunluk Aktif Guc Matrisi hesaplaniyor: "
@@ -1666,8 +1663,7 @@ def get_latest_aum_for_fund(
     import json
     import os
 
-    sandbox_dir = os.path.dirname(os.path.abspath(__file__))
-    cache_file = os.path.join(sandbox_dir, "tefas_cache.json")
+    cache_file = str(DATA_DIR / "tefas_cache.json")
     if not os.path.exists(cache_file):
         return None
 
@@ -1712,7 +1708,7 @@ def get_latest_aum_for_fund(
 
 
 if __name__ == "__main__":
-    from kap_pdf_parser import export_to_html
+    from kap_pipeline.kap_pdf_parser import export_to_html
 
     FON_KODU = "TLY"
 
@@ -1751,12 +1747,12 @@ if __name__ == "__main__":
         )
 
     parser = KAPPdfParser()
-    history = parser.parse_directory("tly_pdfs")
+    history = parser.parse_directory(str(DATA_DIR / "kap" / "tly_pdfs"))
 
     latest_period = tly_latest["period_slug"]
     baseline_data = history.get(latest_period) or {}
     baseline_pdf_name = tly_latest["file"]
-    baseline_pdf_path = os.path.join("tly_pdfs", baseline_pdf_name)
+    baseline_pdf_path = os.path.join(str(DATA_DIR / "kap" / "tly_pdfs"), baseline_pdf_name)
 
     if not baseline_data:
         raise SystemExit(
@@ -2043,9 +2039,10 @@ if __name__ == "__main__":
     ]
 
     print()
+    (DATA_DIR / "kap").mkdir(parents=True, exist_ok=True)
     export_to_html(
         history,
-        output_filename="parser_kontrol_raporu.html",
+        output_filename=str(DATA_DIR / "kap" / "parser_kontrol_raporu.html"),
         delta_report={
             "fon_kodu": FON_KODU,
             "baseline_period": latest_period,

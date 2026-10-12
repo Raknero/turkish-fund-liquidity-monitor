@@ -21,7 +21,7 @@ later on, so all state is encapsulated in the `KAPPdfDownloader` class
 rather than module-level globals.
 
 Usage:
-    from kap_downloader import KAPPdfDownloader
+    from kap_pipeline.kap_downloader import KAPPdfDownloader
 
     downloader = KAPPdfDownloader(fon_kodu="TLY")
     results = downloader.download_reports(days_back=365)
@@ -38,11 +38,15 @@ import re
 import time
 from dataclasses import dataclass
 from datetime import date, datetime
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import requests
 from bs4 import BeautifulSoup
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = REPO_ROOT / "data"
 
 
 def _is_retryable_http_error(exc: BaseException) -> bool:
@@ -413,7 +417,7 @@ class KAPPdfDownloader:
 
         self.fon_kodu = fon_kodu
         self.fund_config = fund_config
-        self.output_dir = output_dir or f"{fon_kodu.lower()}_pdfs"
+        self.output_dir = output_dir or str(DATA_DIR / "kap" / f"{fon_kodu.lower()}_pdfs")
         self.request_delay = request_delay
         self.timeout = timeout
         self.session = self._build_session()

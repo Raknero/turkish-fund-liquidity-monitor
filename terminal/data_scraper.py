@@ -5,6 +5,7 @@ import sys
 import time
 import random
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import requests
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
@@ -14,7 +15,10 @@ TEFAS_DATA_PAGE = "https://www.tefas.gov.tr/tr/fon-verileri"
 GENERAL_INFO_URL = "https://www.tefas.gov.tr/api/funds/fonGnlBlgSiraliGetirDosya"
 DISTRIBUTION_URL = "https://www.tefas.gov.tr/api/funds/dagilimSiraliGetirT"
 
-DATABASE_FILE = "fund_database.json"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = REPO_ROOT / "data"
+
+DATABASE_FILE = str(DATA_DIR / "fund_database.json")
 
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -1070,6 +1074,7 @@ def load_database():
 
 def save_database(database):
     """Persists the master fund database to disk."""
+    os.makedirs(os.path.dirname(DATABASE_FILE), exist_ok=True)
     with open(DATABASE_FILE, "w", encoding="utf-8") as file:
         json.dump(database, file, ensure_ascii=False, indent=4)
 
@@ -1403,7 +1408,7 @@ if __name__ == "__main__":
     # all) while leaving every other tracked fund untouched -- so a CLI/cron
     # run looked successful while most funds kept serving stale data.
     # A fund code passed on the command line overrides this, e.g.
-    #     python data_scraper.py TLY PHE
+    #     python -m terminal.data_scraper TLY PHE
     cli_fund_codes = [code.strip().upper() for code in sys.argv[1:] if code.strip()]
     fund_codes = cli_fund_codes or sorted(load_database().keys())
 

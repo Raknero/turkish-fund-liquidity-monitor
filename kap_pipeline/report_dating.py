@@ -65,13 +65,15 @@ Callers skip the fund with a loud warning instead.
 
 from __future__ import annotations
 
-import os
-import sys
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from typing import Dict, List, Optional, Sequence
 
-from kap_pdf_parser import ReportFingerprint
+from kap_pipeline.kap_pdf_parser import ReportFingerprint
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = REPO_ROOT / "data"
 
 # The sandbox-local TEFAS cache (see `load_tefas_records`) -- deliberately
 # never the live app's fund_database.json.
@@ -286,8 +288,8 @@ def load_tefas_records(
     this sandbox's own `tefas_cache.json` and topping it up from TEFAS when
     it is missing a fund or has gone stale (see `CACHE_FRESHNESS_DAYS`).
 
-    Uses the same deliberate, documented `sys.path` bridge to
-    `fon_terminal/data_scraper.py` as `kap_delta_engine.
+    Uses the same deliberate, documented bridge to
+    `terminal/data_scraper.py` as `kap_delta_engine.
     build_tefas_power_matrix`, and redirects `data_scraper.DATABASE_FILE`
     to the sandbox cache for the duration of the call so this can never
     write into the live dashboard's `fund_database.json`.
@@ -306,18 +308,14 @@ def load_tefas_records(
     if not wanted:
         return {}
 
-    sandbox_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(sandbox_dir)  # fon_terminal/
-    if project_root not in sys.path:
-        sys.path.insert(0, project_root)
-
     try:
-        import data_scraper
+        from terminal import data_scraper
     except ImportError as exc:
         print(f"[UYARI] TEFAS veri modulu import edilemedi, rapor tarihleme icin veri yok: {exc}")
         return {}
 
-    data_scraper.DATABASE_FILE = os.path.join(sandbox_dir, TEFAS_CACHE_FILENAME)
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    data_scraper.DATABASE_FILE = str(DATA_DIR / TEFAS_CACHE_FILENAME)
 
     def read_cache() -> Dict[str, List[dict]]:
         try:

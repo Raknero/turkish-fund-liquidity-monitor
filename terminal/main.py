@@ -11,7 +11,7 @@ long as the server runs, so the dashboard keeps serving current data
 without needing a restart.
 
 Run with:
-    uvicorn main:app --reload
+    uvicorn terminal.main:app --reload
 """
 import asyncio
 import json
@@ -27,11 +27,11 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, field_validator
 
-from data_scraper import DATABASE_FILE, load_database, save_database, scrape_and_update
-from signals import annotate_records
+from terminal.data_scraper import DATABASE_FILE, load_database, save_database, scrape_and_update
+from terminal.signals import annotate_records
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = BASE_DIR / DATABASE_FILE
+DATABASE_PATH = Path(DATABASE_FILE)
 FUND_CODE_PATTERN = re.compile(r"^[A-Z0-9]{2,10}$")
 
 # Funds hidden from the UI ("show_on_ui": false) but flagged for continued
@@ -429,4 +429,4 @@ def annotated_fund_database():
 # Mounted last (and at the root path) so it acts as a catch-all: it serves
 # index.html at "/" and any other static asset alongside it, without
 # shadowing `/api/*` or `/fund_database.json` registered above.
-app.mount("/", StaticFiles(directory=str(BASE_DIR), html=True), name="static")
+app.mount("/", StaticFiles(directory=str(BASE_DIR / "static"), html=True), name="static")

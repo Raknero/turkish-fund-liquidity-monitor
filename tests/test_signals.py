@@ -1,14 +1,11 @@
 """Case-study signal rules against compact TEFAS windows."""
 import json
-import sys
 import unittest
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "kap_pdf_downloader"))
+from terminal.signals import annotate_records, liquidity_ratio_pct
 
-from signals import annotate_records, liquidity_ratio_pct  # noqa: E402
+ROOT = Path(__file__).resolve().parents[1]
 
 FIXTURES = ROOT / "tests" / "fixtures" / "signal_windows.json"
 
@@ -19,7 +16,7 @@ def load_windows():
 
 class LiquidityMatchesKap(unittest.TestCase):
     def test_same_as_kap_delta_engine(self):
-        from kap_delta_engine import _liquidity_ratio_pct
+        from kap_pipeline.kap_delta_engine import _liquidity_ratio_pct
 
         sample = {
             "Repo": -7.61,

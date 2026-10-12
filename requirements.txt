@@ -1,0 +1,24 @@
+requests==2.34.2
+playwright==1.61.0
+fastapi==0.140.0
+uvicorn[standard]==0.51.0
+pdfplumber==0.11.10
+beautifulsoup4==4.13.4
+
+# playwright is also needed by kap_pipeline/kap_delta_engine.py's
+# build_tefas_power_matrix(), which imports terminal/data_scraper.py to
+# reuse its existing TEFAS scraper.
+
+# Required for kap_pipeline/kap_delta_engine.py's fetch_bist_prices(),
+# which pulls live BIST closing prices (via the ".IS" Yahoo Finance suffix)
+# to turn the portfolio evolution table's lot counts into a TL position
+# size / AUM %. case_study/build_case_study.py also imports it.
+yfinance==1.5.2
+
+# Wraps every outbound KAP HTTP call (kap_pipeline/kap_downloader.py's
+# _request_with_retry, reused by kap_delta_engine.py) with an exponential
+# backoff retry ONLY on HTTP 429/50x -- see both modules' own docstrings.
+tenacity==9.1.4
+
+# Charts for case_study/build_case_study.py.
+matplotlib==3.11.2
