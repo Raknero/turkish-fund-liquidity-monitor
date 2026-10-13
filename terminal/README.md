@@ -15,7 +15,7 @@ What those numbers showed before September 2026 is in the [case study](../case_s
 
 TLY as of 16.09.2026 — the last published TEFAS row before the suspension. Price and AUM still look fine; shares outstanding and reverse-repo are already falling. The charts below the table are the same window. The terminal keeps collecting after that date and shows a price of 0 as suspended. The KAP book does not use later rows.
 
-That row is the fund from the outside. The holdings book comes from the [KAP pipeline](../kap_pipeline/README.md). Lot changes run through the notices of 16.09. The weight denominator is the TEFAS row dated 16.09, which is the 15.09 valuation. The prices in those weights are the 16.09 BIST closes. What the series showed before the break is in the [case study](../case_study/README.md).
+That row is the fund from the outside. The holdings book comes from the [KAP pipeline](../kap_pipeline/README.md). Lot changes come from notices published through 16.09; the last trade in them is dated 11.09. The weight denominator is the TEFAS row dated 16.09, which is the 15.09 valuation. The prices in those weights are the 16.09 BIST closes. What the series showed before the break is in the [case study](../case_study/README.md).
 
 **Alerting (added after the September 2026 case study).** The dashboard applies the four rules from that write-up — whale day, share drain while price is down less than 3% (`Pay erimesi`), repo borrowing, net liquidity below zero — with the first/last fire date and the values that crossed the threshold. Outflow plus a thinning buffer is the high-severity case. A published price of 0 is shown as suspended, not as −100%.
 

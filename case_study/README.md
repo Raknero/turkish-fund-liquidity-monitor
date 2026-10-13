@@ -53,11 +53,11 @@ The terminal on 16.09, last published TEFAS row before the halt — price and AU
 
 *Same dashboard as the terminal README. 17.09 (zero price / suspension, alerts) is in section 7.*
 
-The KAP frames are TLY's book with lots, closes and AUM stopped on 16.09.
+The KAP frames are TLY's book: lots from notices published through 16.09 (last trade 11.09), closes and AUM on 16.09.
 
 ![KAP execution trace](img/kap_report_overview.png)
 
-The filing is `2026_HB35`, published 09.09. The page says August; the header matches the TEFAS row of 07.09, so the holdings are the 04.09 close. Notices from 05.09 through 16.09 follow: 11 in total. Three were already inside the PDF and were dropped. Eight named several funds at once. None named TLY alone.
+The filing is `2026_HB35`, published 09.09. The page says August; the header matches the TEFAS row of 07.09, so the holdings are the 04.09 close. Notices published 05.09–16.09 follow: 11 in total. Three were already inside the PDF and were dropped. Eight named several funds at once. None named TLY alone.
 
 ![KAP holdings](img/kap_report_holdings.png)
 

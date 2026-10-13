@@ -25,7 +25,11 @@ header matches one TEFAS row, 07.09.2026 (price 9,495.638007, 26,078,554
 shares, NAV 247,632,508,542.43 TL). A row dated T is published on T and
 valued at the previous session's close, so the valuation day is 04.09,
 and the newest purchase date in the PDF is 04.09 too. The delta window
-opens the next calendar day, 05.09, and runs through the cutoff, 16.09. KAP returned 11 notices. Three were
+opens the next calendar day, 05.09, and takes the notices KAP published
+through the cutoff, 16.09. The last trade in them is dated 11.09. If a
+trade from 14–16.09 was disclosed after 16.09, it is not in the book. The
+cutoff is deliberate: after 16.09 the funds were suspended and liquidated, and
+later disclosures are not comparable. KAP returned 11 notices. Three were
 already inside the PDF and were dropped. Eight named several funds.
 None named TLY alone, so nothing was merged as a fact.
 
@@ -69,7 +73,7 @@ the log. There is no step 5. "The cutoff" below is 16.09.2026.
 | Step | What it uses |
 |---|---|
 | 0 | `download_latest_report()` asks KAP for the newest publication and deletes other PDFs in that fund's folder, so a July file left on disk cannot stay the baseline. |
-| 1 | `apply_delta` layers buy/sell notices from the day after the PDF's measured valuation date through the cutoff. Only a notice that names this fund alone is merged. |
+| 1 | `apply_delta` layers buy/sell notices published from the day after the PDF's measured valuation date through the cutoff. Only a notice that names this fund alone is merged. |
 | — | `discover_related_funds` reads the other fund codes on the notices that named several funds. |
 | 2 | `collect_global_baseline` downloads each of those funds' own latest PDF. Funds publish on different days; they are not forced onto TLY's period. |
 | 3 | `build_tefas_power_matrix` builds a daily "Aktif Güç" through the cutoff. Later rows, and rows with a zero unit price, are dropped. |
