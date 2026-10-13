@@ -257,14 +257,12 @@ class KAPPdfParser:
                         break
 
                     for row in self._extract_rows(page):
-                        joined = "".join(cell or "" for cell in row).strip()
-
                         if not collecting:
-                            if self.SECTION_START_MARKER in joined:
+                            if self._is_section_start(row):
                                 collecting = True
                             continue
 
-                        if any(marker in joined for marker in self.SECTION_END_MARKERS):
+                        if self._is_section_end(row):
                             collecting = False
                             finished = True
                             break
@@ -284,6 +282,24 @@ class KAPPdfParser:
             self._log(f"[BİLGİ] '{os.path.basename(filepath)}': {len(holdings)} hisse kodu ayrıştırıldı.")
 
         return holdings
+
+    @classmethod
+    def _is_section_start(cls, row: list) -> bool:
+        """True if the row's cells, joined with all whitespace removed,
+        contain SECTION_START_MARKER (also stripped of whitespace).
+        pdfplumber may split the heading across cells or drop/add spaces
+        ("HİSSE SENETL" + "ERİ")."""
+        joined = "".join("".join(cell or "" for cell in row).split())
+        return "".join(cls.SECTION_START_MARKER.split()) in joined
+
+    @classmethod
+    def _is_section_end(cls, row: list) -> bool:
+        """True if the row, compared the same whitespace-free way, contains
+        any of SECTION_END_MARKERS. "GRUP" + "TOPLAMI" in two cells joins to
+        "GRUPTOPLAMI", which never matched the spaced marker before, so the
+        subtotal row was read as a ticker named "GRUP"."""
+        joined = "".join("".join(cell or "" for cell in row).split())
+        return any("".join(marker.split()) in joined for marker in cls.SECTION_END_MARKERS)
 
     def parse_directory(self, dirpath: str) -> Dict[str, Dict[str, float]]:
         """Parses every "*.pdf" file in `dirpath` and returns a nested

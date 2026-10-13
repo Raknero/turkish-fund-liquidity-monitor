@@ -45,11 +45,12 @@ large names did not trade. `Güncel Fiyat` is the BIST close on 16.09
 the TEFAS row dated 16.09, **243,624,480,154.28 TL**. That row is the
 15.09 valuation, so DSTKF's **27.16%** is those lots at the limit-down
 close, over the previous session's NAV. The same lots at the 15.09 close are 30.2% of
-that NAV; the case study uses that cut. Priced names cover 85.23% of
-the AUM. The rest has no usable close.
+that NAV; the case study uses that cut. All 44 names have a 16.09 close;
+together they are 85.23% of that NAV. The rest is reverse repo, debt and
+fund units.
 
 The frames are a short look at that run. The uncut control report — the
-full execution log, all 45 names, the evolution table, and the Aktif
+full execution log, all 44 names, the evolution table, and the Aktif
 Güç matrix — is
 [parser_kontrol_raporu_2026-09-16.pdf](parser_kontrol_raporu_2026-09-16.pdf).
 It was generated on 05.10.2026 with the cutoff at 16.09.2026.
