@@ -187,7 +187,6 @@
         .report-box h3 { margin-top: 0; color: #60a5fa; font-size: 16px; margin-bottom: 10px; }
         .report-box ul { margin: 0; padding-left: 0; list-style-type: none; }
         .report-box li { margin-bottom: 6px; padding-left: 10px; }
-        .ai-comment { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #475569; color: #94a3b8; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -984,7 +983,7 @@
         const prev = fundData[fundData.length - 2];
         
         let reportHTML = `<div class="report-box">
-            <h3>📈 Günlük Fon Yöneticisi Hamleleri (${prev.Tarih} ➔ ${last.Tarih})</h3>
+            <h3>📈 Günlük Varlık Dağılımı Değişimi (${prev.Tarih} ➔ ${last.Tarih})</h3>
             <ul>`;
 
         const lastHasDist = last.Varliklar && Object.keys(last.Varliklar).length > 0;
@@ -1026,13 +1025,6 @@
                 let tColor = isUp ? '#22c55e' : '#ef4444';
                 reportHTML += `<li>${icon} <strong style="color:#f8fafc;">${item.asset}:</strong> %${item.prevVal.toFixed(2)} <strong><span style="color:${tColor};">(${symbol}${item.diff.toFixed(2)}%)</span></strong> ➔ <strong>%${item.newVal.toFixed(2)}</strong></li>`;
             });
-
-            let increases = changedAssets.filter(i => i.diff > 0).map(i => i.asset).join(', ');
-            let decreases = changedAssets.filter(i => i.diff < 0).map(i => i.asset).join(', ');
-            
-            if(increases && decreases) {
-                reportHTML += `<div class="ai-comment">🤖 Sistem Yorumu: Fon yöneticisi dün ${decreases} oranını düşürüp, açılan bu limiti ağırlıklı olarak ${increases} tarafına kaydırmış.</div>`;
-            }
         }
         
         reportHTML += `</ul></div>`;
