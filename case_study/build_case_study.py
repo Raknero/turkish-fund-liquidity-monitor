@@ -249,7 +249,7 @@ def fund_panel(fund, rows, summary, output_path, trades=None):
     plt.close(fig)
 
 
-def tly_concentration(pdf_dir):
+def tly_concentration(pdf_dir, nav_row_1609):
     """Top holdings by NAV weight for each TLY report on disk, using the
     report's own per-stock valuation prices; plus a 15.09 estimate from
     the 04.09 lots at 15.09 BIST closes when yfinance is available."""
@@ -271,13 +271,22 @@ def tly_concentration(pdf_dir):
     estimate = None
     latest = snapshots.get("04.09 (weekly)")
     if latest:
-        estimate = estimate_tly_0916(latest["lots"])
+        estimate = estimate_tly_0916(latest["lots"], nav_row_1609)
         if estimate:
             snapshots["15.09 (04.09 lots, est.)"] = {"weights": estimate["weights_15"], "lots": latest["lots"]}
     return snapshots, estimate
 
 
-def estimate_tly_0916(lots):
+def read_tly_row_1609(database):
+    """TLY's TEFAS row dated 16.09.2026: (Fiyat, ToplamDeger, Hisse Senedi %).
+    The row is valued at the 15.09 close. Raises if it is missing."""
+    row = next((r for r in database.get("TLY", {}).get("records", []) if r.get("Tarih") == "16.09.2026"), None)
+    if row is None or "Hisse Senedi" not in (row.get("Varliklar") or {}):
+        raise ValueError("TLY 16.09.2026 satırı (Fiyat, ToplamDeger, Hisse Senedi) veritabanında yok.")
+    return float(row["Fiyat"]), float(row["ToplamDeger"]), float(row["Varliklar"]["Hisse Senedi"])
+
+
+def estimate_tly_0916(lots, nav_row_1609):
     try:
         import yfinance as yf
     except ImportError:
@@ -285,7 +294,6 @@ def estimate_tly_0916(lots):
     tickers = sorted(t for t, lot in lots.items() if lot > 0)
     data = yf.download([f"{t}.IS" for t in tickers], start="2026-09-14", end="2026-09-18",
                        group_by="ticker", auto_adjust=False, progress=False)
-    nav_row_1609 = 243_624_000_000.0  # TEFAS row 16.09 = NAV valued at the 15.09 close
     weights_15, moves, pnl = {}, {}, 0.0
     for ticker in tickers:
         try:
@@ -418,7 +426,8 @@ def main():
 
     tly_estimate_price = None
     if os.path.isdir(PRIVATE_PDF_DIR):
-        snapshots, estimate = tly_concentration(PRIVATE_PDF_DIR)
+        tly_row_1609, nav_row_1609, tly_equity_1609 = read_tly_row_1609(database)
+        snapshots, estimate = tly_concentration(PRIVATE_PDF_DIR, nav_row_1609)
         if snapshots:
             concentration_chart(snapshots, os.path.join(PUBLIC_IMG_DIR, "tly_concentration.png"))
             print("\n=== TLY concentration ===")
@@ -428,9 +437,7 @@ def main():
                 print(f"{label:26} top1 {top_n_share(w, 1):.1f}% top3 {top_n_share(w, 3):.1f}% "
                       f"top5 {top_n_share(w, 5):.1f}% | " + ", ".join(f"{t} {v:.1f}" for t, v in top))
         if estimate:
-            tly_row_1609 = 10308.9671
             upper = estimate["nav_change_pct_upper"]
-            tly_equity_1609 = 88.39
             scaled = upper * tly_equity_1609 / estimate["equity_covered_pct"]
             tly_estimate_price = tly_row_1609 * (1 + (upper + scaled) / 200)
             print(f"\n=== TLY 16.09 estimate ===\nequities priced: {estimate['equity_covered_pct']:.1f}% of NAV; "

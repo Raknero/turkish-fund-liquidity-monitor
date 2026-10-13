@@ -168,7 +168,9 @@ they **were** written after the event; see the limitations in section 6.
 | 04.09 (weekly report) | DSTKF 25.3% | 60.0% | 74.9% |
 | 15.09 (04.09 lots at 15.09 closes, estimate) | DSTKF 30.2% | 67.6% | 85.6% |
 
-On 16.09 every one of the top five holdings closed at the -10% daily limit. The section 2 frame multiplies the 04.09 lots by those closes and divides by this same NAV. DSTKF prints at 27.2%, those lots at the crash price over the previous session's assets. Applying the 16.09 closes to the 04.09 holdings gives an estimated one-day NAV change of **-8.8% to -9.4%**. Net liquidity was below zero: repo borrowing had passed the remaining reverse repo (2.7% of NAV that day) and deposits, and there were no buyers for what the fund would have to sell.
+The 15.09 row uses 04.09 lots. At 15.09 closes those lots are 94.5% of NAV, while TEFAS shows equities at 87.4%: the fund sold shares in between, so the row overstates each weight by roughly that ratio (DSTKF about 28% rather than 30.2%).
+
+On 16.09 every one of the top five holdings closed at the -10% daily limit. The section 2 frame multiplies the 04.09 lots by those closes and divides by this same NAV. DSTKF prints at 27.2%, those lots at the crash price over the previous session's assets. Applying the 16.09 closes to the 04.09 holdings gives an estimated one-day NAV change of **-8.7% to -9.4%**. Net liquidity was below zero: repo borrowing had passed the remaining reverse repo (2.7% of NAV that day) and deposits, and there were no buyers for what the fund would have to sell.
 
 ### 4.3 The manager was one position, not several
 
