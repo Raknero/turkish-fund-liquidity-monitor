@@ -118,12 +118,12 @@ they **were** written after the event; see the limitations in section 6.
 
 - **Shares fell far faster than investors.** In both funds the average leaver
   was much larger than the average investor: the whale-radar pattern.
-- **The buffer was already thin.** PHE's cash-like assets were 1-3% of NAV in July, and net liquidity started at +2.2%.
+- **The buffer was already thin.** PHE's cash-like assets were 0-3% of NAV in July, and net liquidity started at +2.2%.
 - **From 05.08 both funds were borrowing to pay leavers.** By late August, PBR's
   equity exposure was 129% of NAV: leveraged, and the investors who stayed were
   financing the ones who left.
 - **Price was the last thing to move on PHE.** It stayed flat until 02.09, then fell
-  9-28% per day. PBR was already down 14.8% by that morning, mostly in the
+  8-28% per day through 11.09, and 38% and 48% on 14.09 and 15.09. PBR was already down 14.8% by that morning, mostly in the
   previous week, and then fell with it.
 
 ![PBR panel](img/pbr_panel.png)
@@ -224,10 +224,10 @@ Reading the table:
   two signals fired weeks ahead. In calm periods the same rules stayed quiet on
   funds that were not being drained (TP2, DOH, THF, KHA through August).
 - **Outflows alone are not the danger; outflows against no buffer are.** PRY,
-  a cash-like fund (about 95% money market and reverse repo), lost 83% of its
+  a cash-like fund (81-98% reverse repo, money market and deposits through 16.09), lost 83% of its
   shares between mid-August and 16.09, paid those leavers, and its price kept rising. After that it
   was left holding its illiquid remainder (commercial paper, lease certificates),
-  and its share count has not moved since 17.09. The drain rule fired; the
+  and its share count has not moved since 16.09. The drain rule fired; the
   liquidity rules correctly did not.
 - **Some risk is not in any single fund's numbers.** TP2 (about 79% liquid, no
   equities, no signals) was suspended on 17.09 with the rest of its manager's
