@@ -159,7 +159,11 @@ TEFAS_DISTRIBUTION_MAP = {
     "kkstl": "Kamu Kira Sertifikaları (TL)",
     "ost": "Özel Sektör Tahvili",
     "vdm": "Varlığa Dayalı Menkul Kıymetler",
-    "tpp": "Borsa İstanbul Para Piyasası",
+    # tpp, hb, km, ybyf: labels from TEFAS's own fon-verileri page (13.10.2026).
+    "tpp": "Takasbank Para Piyasası",
+    "hb": "Hazine Bonosu",
+    "km": "Kıymetli Madenler",
+    "ybyf": "Yabancı Borsa Yatırım Fonları",
 }
 
 
@@ -956,7 +960,16 @@ def build_distribution_map(records):
                 continue
 
             asset_name = TEFAS_DISTRIBUTION_MAP.get(str(key).strip().lower(), key)
-            varliklar[asset_name] = value
+            if asset_name in varliklar:
+                # Two codes mapped to one name: keep both by summing, never
+                # let the later one overwrite the earlier.
+                print(
+                    f"[UYARI] {date_str}: '{key}' zaten var olan '{asset_name}' adına "
+                    f"eşleniyor; değerler toplandı ({varliklar[asset_name]} + {value})."
+                )
+                varliklar[asset_name] += value
+            else:
+                varliklar[asset_name] = value
 
         dist_map[date_str] = varliklar
     return dist_map

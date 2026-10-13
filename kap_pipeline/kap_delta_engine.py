@@ -1283,13 +1283,11 @@ def _liquidity_ratio_pct(varliklar: Dict[str, float]) -> float:
                          with their own sign (a fund that borrowed via repo
                          has a NEGATIVE "Repo" %, which correctly reduces
                          net liquidity rather than being ignored).
-    - "para piyasası"  -> matches money-market lines regardless of naming
-                         era: TEFAS_DISTRIBUTION_MAP currently emits
-                         "Borsa İstanbul Para Piyasası" for both the "bpp"
-                         and "tpp" abbreviations, which is the successor
-                         name to what used to be called "Takasbank Para
-                         Piyasası" -- matching on the shared "Para
-                         Piyasası" substring is robust to either naming.
+    - "para piyasası"  -> matches two separate money markets:
+                         "Borsa İstanbul Para Piyasası" ("bpp") and
+                         "Takasbank Para Piyasası" ("tpp"). TEFAS reports
+                         them as separate lines; neither is the other's
+                         old name.
     - "mevduat"        -> matches any deposit line (e.g. "Mevduat (TL)").
 
     Returns 0.0 (never raises, and never treated as "missing/unknown") if
