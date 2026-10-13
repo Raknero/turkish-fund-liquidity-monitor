@@ -53,7 +53,7 @@ The frames are a short look at that run. The uncut control report — the
 full execution log, all 44 names, the evolution table, and the Aktif
 Güç matrix — is
 [parser_kontrol_raporu_2026-09-16.pdf](parser_kontrol_raporu_2026-09-16.pdf).
-It was generated on 05.10.2026 with the cutoff at 16.09.2026.
+It was generated on 13.10.2026 with the cutoff at 16.09.2026.
 
 The folder is decoupled from the terminal. The pipeline does not import `main.py`,
 and its dependencies are in the root `requirements.txt`. The one link to
@@ -186,7 +186,8 @@ cover that span. It is not a separate "last 30 days" clock.
 | 02.09.2026 | A weekly `donem` no longer crashes. The patch forces it back into a month and double-counts. |
 | 14.09.2026 | The valuation date is measured from the PDF. Filenames carry the slug. The percent column is renamed. |
 | 30.09.2026 | BIST closes and AUM stop on the cutoff. |
-| 05.10.2026 | The delta window and the Aktif Güç matrix use that same cutoff. The frames at the top are this run: HB35 valued 04.09, notices through 16.09. |
+| 05.10.2026 | The delta window and the Aktif Güç matrix use that same cutoff. |
+| 13.10.2026 | The equities section ends on a `GRUP TOPLAMI` row split across two cells; that subtotal was being read as a ticker named `GRUP`. Report and frames rerun: HB35 valued 04.09, notices published through 16.09, last trade 11.09. |
 
 ## Download and a direct call
 
