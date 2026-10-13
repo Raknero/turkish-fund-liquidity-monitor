@@ -94,6 +94,12 @@ reverse repo, money-market lines, and deposits. Repo can be negative, so
 this is a net figure. A missing `Varliklar` dict skips that day. A
 present dict with no equity key is 0% equity.
 
+Aktif Güç multiplies TEFAS's AUM, which is NAV, by allocation percentages
+that TEFAS measures against portfolio value. The two bases can differ a
+lot: on 04.09, TLY's equities were 83.05% of portfolio value and 84.88%
+of NAV; DOH's were 69.13% and 87.23%. TEFAS publishes no daily portfolio
+value, so the split carries that bias.
+
 ## Decisions that stuck
 
 **Buy/sell notices were not missing.** The first delta fetch used the

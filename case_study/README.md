@@ -94,7 +94,7 @@ every tracked fund:
 |---|---|---|
 | Whale day | Shares outstanding -2% or more in a day while investor count is flat or rising (>= -0.5%) | Large holders leaving while small ones stay or arrive |
 | Share drain | Shares -15% or more over 20 business days while price is down less than 3% | Money leaving a fund whose price still looks healthy |
-| Repo borrowing | Repo at or below -5% of NAV | The fund is borrowing, typically to meet redemptions |
+| Repo borrowing | Repo at or below -5% of portfolio value | The fund is borrowing, typically to meet redemptions |
 | Net liquidity < 0 | Repo + reverse repo + money market + deposits below zero | Cash-like assets no longer cover what the fund owes short term |
 
 Net liquidity uses the same definition as the KAP pipeline's
@@ -118,12 +118,12 @@ they **were** written after the event; see the limitations in section 6.
 
 - **Shares fell far faster than investors.** In both funds the average leaver
   was much larger than the average investor: the whale-radar pattern.
-- **The buffer was already thin.** PHE's cash-like assets were 0-3% of NAV in July, and net liquidity started at +2.2%.
+- **The buffer was already thin.** PHE's cash-like assets were 0-3% of portfolio value in July, and net liquidity started at +2.2%.
 - **From 05.08 both funds were borrowing to pay leavers.** By late August, PBR's
-  equity exposure was 129% of NAV: leveraged, and the investors who stayed were
+  equity exposure was 129% of portfolio value: leveraged, and the investors who stayed were
   financing the ones who left.
 - **Price was the last thing to move on PHE.** It stayed flat until 02.09, then fell
-  8-28% per day through 11.09, and 38% and 48% on 14.09 and 15.09. PBR was already down 14.8% by that morning, mostly in the
+  8-28% per day through 11.09, and 38% and 48% on 14.09 and 15.09. PBR was already down 14.8% by 02.09, mostly in the
   previous week, and then fell with it.
 
 ![PBR panel](img/pbr_panel.png)
@@ -141,10 +141,10 @@ they **were** written after the event; see the limitations in section 6.
 | Unit price | **+39.6%** |
 | Shares outstanding | **-23.7%** |
 | Investors | +5.4% |
-| Reverse repo (cash lent out) | 16.1% to 2.7% of NAV |
+| Reverse repo (cash lent out) | 16.1% to 2.7% of portfolio value |
 | Repo borrowing | -1.8% to -7.6% (the step came on 30.07) |
 | Net liquidity | +14.6% to -4.4% (**negative from 08.09**) |
-| Equity share of NAV | 62.8% to 87.4% |
+| Equity share of portfolio value | 62.8% to 87.4% |
 
 - **Whale days** (7 of them) appeared from 24.07. The clearest was **02.09**:
   shares fell 8.2% (about 22 billion TL) while the investor count fell by only
@@ -168,9 +168,9 @@ they **were** written after the event; see the limitations in section 6.
 | 04.09 (weekly report) | DSTKF 25.3% | 60.0% | 74.9% |
 | 15.09 (04.09 lots at 15.09 closes, estimate) | DSTKF 30.2% | 67.6% | 85.6% |
 
-The 15.09 row uses 04.09 lots. At 15.09 closes those lots are 94.5% of NAV, while TEFAS shows equities at 87.4%: the fund sold shares in between, so the row overstates each weight by roughly that ratio (DSTKF about 28% rather than 30.2%).
+The 15.09 row uses 04.09 lots. At 15.09 closes those lots are 94.5% of NAV. TEFAS's equity line that day is 87.4%, but TEFAS measures allocation against portfolio value, not NAV; on 04.09 the two bases differed by 2.2% (83.05% vs 84.88% in the PDF). Shares outstanding fell 9.4% between the two valuation dates, so the fund most likely sold equities to pay leavers, and this row overstates each weight by roughly 6–8% (DSTKF nearer 28% than 30.2%).
 
-On 16.09 every one of the top five holdings closed at the -10% daily limit. The section 2 frame multiplies the 04.09 lots by those closes and divides by this same NAV. DSTKF prints at 27.2%, those lots at the crash price over the previous session's assets. Applying the 16.09 closes to the 04.09 holdings gives an estimated one-day NAV change of **-8.7% to -9.4%**. Net liquidity was below zero: repo borrowing had passed the remaining reverse repo (2.7% of NAV that day) and deposits, and there were no buyers for what the fund would have to sell.
+On 16.09 every one of the top five holdings closed at the -10% daily limit. The section 2 frame multiplies the 04.09 lots by those closes and divides by this same NAV. DSTKF prints at 27.2%, those lots at the crash price over the previous session's assets. Applying the 16.09 closes to the 04.09 holdings gives an estimated one-day NAV change of **-8.7% to -9.4%**. Net liquidity was below zero: repo borrowing had passed the remaining reverse repo (2.7% of portfolio value that day) and deposits, and there were no buyers for what the fund would have to sell.
 
 ### 4.3 The manager was one position, not several
 
@@ -270,7 +270,7 @@ The alerting layer this case study argues for is small:
 1. Compute the four signals daily for every tracked fund and surface them on
    the dashboard next to price.
 2. Combine them: a drain or whale signal **with** repo borrowing (at or below
-   −5% of NAV) or net liquidity below zero is the high-severity case; either
+   −5% of portfolio value) or net liquidity below zero is the high-severity case; either
    one alone is a watch item.
 3. Roll exposures up by **manager** and by **underlying stock** across funds,
    using the KAP pipeline's related-fund discovery and holdings.

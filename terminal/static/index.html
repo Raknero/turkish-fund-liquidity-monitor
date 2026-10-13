@@ -469,7 +469,7 @@
             return `20 günde pay ${formatSignedPct(s.drain_share_chg)}, fiyat ${formatSignedPct(s.drain_price_chg)} — eşik: pay ≤ −15%, fiyat > −3%`;
         }
         if (key === 'borrow') {
-            return `Repo ${formatSignedPct(s.repo)} NAV — eşik ≤ −5%`;
+            return `Repo ${formatSignedPct(s.repo)} (portföy değerine göre) — eşik ≤ −5%`;
         }
         return `Net likidite ${formatSignedPct(s.net_liquidity_pct)} — eşik < 0`;
     }

@@ -138,7 +138,7 @@ python -m terminal.data_scraper TLY PHE  # just these
 | `records[].Pay` | Shares outstanding. |
 | `records[].ToplamDeger` | Total net asset value (TRY). |
 | `records[].Yatirimci` | Investor count. |
-| `records[].Varliklar` | Asset type → percent of NAV. Repo can be negative. Keys are the full TEFAS names, not the raw abbreviations. |
+| `records[].Varliklar` | Asset type → percent of portfolio value. Repo can be negative. Keys are the full TEFAS names, not the raw abbreviations. |
 
 ## Troubleshooting
 
