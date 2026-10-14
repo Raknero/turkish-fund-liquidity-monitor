@@ -295,6 +295,17 @@ regenerates every chart in `img/` and every number in this document. The
 concentration figures need the TLY KAP PDFs, and the 16.09 estimate needs
 `yfinance`.
 
+## 9. Corrections (14.10.2026)
+
+After publication I re-checked the pipeline against the raw KAP PDFs and TEFAS responses. Four issues turned up. All are fixed, and none changes the signal timing in section 4.4.
+
+- KAP parser. A subtotal row split across two PDF cells was read as a holding named `GRUP`. It had no price, so weights were unaffected; the control report and frames were rerun.
+- TEFAS mapping. Two money-market codes mapped to one name, so on days both appeared one overwrote the other (TP2, 31.08). Net-liquidity signals were unaffected.
+- 16.09 estimate. One input came from the 15.09 row instead of the 16.09 row. The range moved from −8.8%…−9.4% to −8.7%…−9.4%.
+- Wording. TEFAS allocation percentages are shares of portfolio value, not NAV. The KAP book takes notices published through 16.09 (last trade 11.09). Four small figures were corrected to match the data.
+
+The code fixes come with tests.
+
 ---
 
 ### Author's note
