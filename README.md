@@ -57,5 +57,5 @@ its data sources, decisions and limits.
   is the last commit from before the event. Later commits are dated and say
   what was added after. The folder layout changed in October 2026; the tag
   shows the old one.
-- Corrections made on 14.10.2026 are listed at the end of the case study.
+- Corrections made on 14.10.2026 are listed at the end of the [case study](case_study/README.md).
 - Research project, not investment advice.
